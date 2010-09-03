@@ -8,13 +8,15 @@ __author__ = "Kenny Meyer"
 __email__ = "knny.myer@gmail.com"
 
 import simplejson as json
+from os import path
 from sys import argv
 
 from src import Task
 from src import JSONHandler
 
-
 class TimeTracker(object):
+    CURRENT = path.expanduser("~/.tt_running")
+
     def __init__(self):
         self.task = Task()
         self.fh = JSONHandler("test.json")
@@ -23,12 +25,14 @@ class TimeTracker(object):
         self.task.set_name(name)
         data = self.task.to_json()
         self.fh.write(data)
-        print self.fh.load()
 
 def main():
     tracker = TimeTracker()
     if argv[1].startswith("track"):
         tracker.track(argv[2])
+    if argv[1].startswith("list"):
+        print tracker.fh.task_list
+
 
 if __name__ == "__main__":
     main()

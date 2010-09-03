@@ -8,6 +8,7 @@ __author__ = "Kenny Meyer"
 __email__ = "knny.myer@gmail.com"
 
 import simplejson as json
+from jsonpickle import Pickler, Unpickler
 
 class Handler(object):
     """The abstract class interface."""
@@ -21,20 +22,29 @@ class Handler(object):
     def load(self, fp=None):
         """Load a string object from file."""
         pass
+    
 
 class JSONHandler(Handler):
+    pickler = Pickler()
+    unpickler = Unpickler()
+
     def write(self, obj, fp=None):
         if fp: 
             fp = open(fp, "w")
         else:
             fp = open(self._file_name, "w")
-        json.dump(obj, fp, indent=4, separators=(',', ':'), sort_keys=True)
+        json.dump(dict(obj), fp, indent=4, separators=(',', ':'), sort_keys=True)
 
     def load(self, fp=None):
         if not fp: 
             fp = open(self._file_name)
         else:
             fp = open(fp)
-        return json.load(fp)
+        return json.load(self.unpickler.restore(fp))
+
+    @property
+    def task_list(self):
+        """Return a list of tasks."""
+        return self.load()
 
 __all__ = ["Handler", "JSONHandler"]
