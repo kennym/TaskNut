@@ -1,7 +1,7 @@
 # -*- mode: python; coding: utf-8; -*-
 
 """
-The database module.
+The database handler.
 """
 
 __author__ = "Kenny Meyer"
@@ -15,36 +15,48 @@ class Handler(object):
     def __init__(self, file_name):
         self._file_name = file_name
 
-    def write(self, obj, fp):
-        """Serialize an object, and write to a specific file, if specified."""
-        pass
+    def write(self, obj):
+        """Serialize an object"""
+        raise ImplementionError("Abstract class.")
 
-    def load(self, fp=None):
+    def load(self):
         """Load a string object from file."""
-        pass
+        raise ImplementionError("Abstract class.")
     
 
 class JSONHandler(Handler):
     pickler = Pickler()
     unpickler = Unpickler()
 
-    def write(self, obj, fp=None):
-        if fp: 
-            fp = open(fp, "w")
-        else:
-            fp = open(self._file_name, "w")
-        json.dump(dict(obj), fp, indent=4, separators=(',', ':'), sort_keys=True)
+    def write(self, obj):
+        """Serialize an object, and write to a specific file, if specified.
 
-    def load(self, fp=None):
-        if not fp: 
+        The serializer should check that the identifier (name) of the task is in
+        the database, if yes, then don't create the new task; otherwise, yes.
+        """
+        data = self.load()
+        # Check if the task is already in the task list...
+        for key in obj.keys():
+            # If not, then add it to the dictionary to be serialized:
+            if key not in data.keys():
+                data[key] = obj[key]
+        data = self.pickler.flatten(data)
+        fp = open(self._file_name, "w")
+        json.dump(data, fp, indent=2, separators=(',', ':'), sort_keys=True)
+
+    def load(self):
+        """Load a string object from file."""
+        try:
             fp = open(self._file_name)
-        else:
-            fp = open(fp)
-        return json.load(self.unpickler.restore(fp))
+        except IOError, e:
+            return {}
+        return self.unpickler.restore(json.load(fp))
 
     @property
     def task_list(self):
         """Return a list of tasks."""
+        x = self.load()
         return self.load()
+
 
 __all__ = ["Handler", "JSONHandler"]

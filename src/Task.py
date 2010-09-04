@@ -13,19 +13,27 @@ from jsonpickle import Pickler
 p = Pickler()
 
 class Task(object):
-    def __init__(self):
-        self.name = None
+    def __init__(self, name=None):
+        self.name = name
         self.times = {}
     
     def set_name(self, name):
         self.name = name
+
+    def get_name(self):
+        return self.name
     
     def set_time(self, time, start_time=None, end_time=None):
-        """Set the the start and end time for the task.
-
-        A timedelta is represented as a list.
-        """
+        """Set the the start and end time for the task."""
         pass
-
+    
     def to_json(self):
-        return p.flatten(self.__dict__)
+        """Return a JSON representation of the class."""
+        return p.flatten(self.__dict__())
+
+    def __dict__(self):
+        return {str(self.name): 
+                    {"times": 
+                        dict(self.times)
+                    }
+               }
