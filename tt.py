@@ -8,6 +8,7 @@ __author__ = "Kenny Meyer"
 __email__ = "knny.myer@gmail.com"
 
 import simplejson as json
+
 from os import path
 from sys import argv
 
@@ -23,6 +24,7 @@ class TimeTracker(object):
 
     def track(self, name):
         self.task.set_name(name)
+        self.task.start_time()
         data = self.task.to_json()
         self.fh.write(data)
 
@@ -31,7 +33,7 @@ def main():
     if argv[1].startswith("track"):
         tracker.track(argv[2])
     if argv[1].startswith("list"):
-        print tracker.fh.task_list
+        tracker.fh.task_list
 
 
 if __name__ == "__main__":

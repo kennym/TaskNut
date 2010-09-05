@@ -10,12 +10,14 @@ __email__ = "knny.myer@gmail.com"
 import simplejson as json
 from jsonpickle import Pickler
 
+from datetime import datetime
+
 p = Pickler()
 
 class Task(object):
     def __init__(self, name=None):
         self.name = name
-        self.times = {}
+        self.times = []
     
     def set_name(self, name):
         self.name = name
@@ -23,10 +25,18 @@ class Task(object):
     def get_name(self):
         return self.name
     
-    def set_time(self, time, start_time=None, end_time=None):
-        """Set the the start and end time for the task."""
+    def start_time(self):
+        """Start a new timer for the task"""
+        cur_time = datetime.now()
+        time = [None, None]
+        time[0] = repr(cur_time)
+        time[1] = None
+        print time
+        self.times.append(time)
+
+    def end_time(self):
         pass
-    
+
     def to_json(self):
         """Return a JSON representation of the class."""
         return p.flatten(self.__dict__())
@@ -34,6 +44,6 @@ class Task(object):
     def __dict__(self):
         return {str(self.name): 
                     {"times": 
-                        dict(self.times)
+                        self.times
                     }
                }

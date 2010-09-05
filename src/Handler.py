@@ -9,9 +9,11 @@ __email__ = "knny.myer@gmail.com"
 
 import simplejson as json
 from jsonpickle import Pickler, Unpickler
+from pprint import pprint
+
 
 class Handler(object):
-    """The abstract class interface."""
+    """The abstract Handler class."""
     def __init__(self, file_name):
         self._file_name = file_name
 
@@ -40,6 +42,9 @@ class JSONHandler(Handler):
             # If not, then add it to the dictionary to be serialized:
             if key not in data.keys():
                 data[key] = obj[key]
+            if key in data.keys():
+                data[key].update(obj[key])
+
         data = self.pickler.flatten(data)
         fp = open(self._file_name, "w")
         json.dump(data, fp, indent=2, separators=(',', ':'), sort_keys=True)
@@ -55,8 +60,7 @@ class JSONHandler(Handler):
     @property
     def task_list(self):
         """Return a list of tasks."""
-        x = self.load()
-        return self.load()
+        pprint(self.load(), indent=4)
 
 
 __all__ = ["Handler", "JSONHandler"]

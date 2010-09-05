@@ -25,8 +25,7 @@ class TaskTests(TestCase):
         self.unpickler = Unpickler()
 
     def test_get_json_representation(self):
-        """Get the correct json representation for the __dict__ object of the
-        instantiated class..."""
+        """Get the json representation for the __dict__ object of the Task object..."""
         task_dict = self.task.__dict__()
         json_dict = self.unpickler.restore(self.task.to_json())
         self.assertEquals(json_dict, task_dict)
