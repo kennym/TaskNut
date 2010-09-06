@@ -24,6 +24,10 @@ class Handler(object):
     def load(self):
         """Load a string object from file."""
         raise ImplementionError("Abstract class.")
+
+    def load_obj(self, obj):
+        """Load an object from file."""
+        raise ImplementionError("Abstract class.")
     
 
 class JSONHandler(Handler):
@@ -43,19 +47,32 @@ class JSONHandler(Handler):
             if key not in data.keys():
                 data[key] = obj[key]
             if key in data.keys():
-                data[key].update(obj[key])
+                try:
+                    data[key].update(obj[key])
+                except AttributeError:
+                    data.update(obj)
 
         data = self.pickler.flatten(data)
         fp = open(self._file_name, "w")
         json.dump(data, fp, indent=2, separators=(',', ':'), sort_keys=True)
 
     def load(self):
-        """Load a string object from file."""
+        """Load a whole database."""
         try:
             fp = open(self._file_name)
         except IOError, e:
             return {}
         return self.unpickler.restore(json.load(fp))
+
+    def load_obj(self, obj_name):
+        """Load an object from the database."""
+        data = None
+        try:
+            with open(self._file_name) as f:
+                data = self.unpickler.restore(json.load(f))
+        except IOError, e:
+            return {}
+        return {obj_name : data[obj_name]}
 
     @property
     def task_list(self):
