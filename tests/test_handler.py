@@ -1,7 +1,7 @@
 # -*- mode: python; coding: utf-8; -*-
 
 """
-Test the Task class.
+A brief module description.
 """
 
 __author__ = "Kenny Meyer"
@@ -13,22 +13,9 @@ from unittest import TestCase
 import simplejson as json
 from jsonpickle import Pickler, Unpickler
 from os import path, remove
-import pudb
 
-from src import Task
 from src import JSONHandler
-
-class TaskTests(TestCase):
-    def setUp(self):
-        self.task = Task()
-        self.pickler = Pickler()
-        self.unpickler = Unpickler()
-
-    def test_get_json_representation(self):
-        """Get the json representation for the __dict__ object of the Task object..."""
-        task_dict = self.task.__dict__()
-        json_dict = self.unpickler.restore(self.task.to_json())
-        self.assertEquals(json_dict, task_dict)
+from src import Task
 
 
 class HandlerTests(TestCase):
@@ -89,7 +76,31 @@ class HandlerTests(TestCase):
         for key in json_data.keys():
             key_counter += 1
         self.assertTrue(key_counter == 1)
-            
+
+    def test_load_object(self):
+        task_1 = Task("Test1")
+        self.json_handler.write(task_1.to_json())
+        json_data = self.json_handler.load_obj("Test1")
+        # Assert that the data is the same.
+        self.assertEquals(json_data, task_1.__dict__())
+
+    def test_load_objects(self):
+        """Load an object from the JSON database."""
+        task_1 = Task("Test1")
+        task_2 = Task("Test2")
+        task_3 = Task("Test3")
+        self.json_handler.write(task_1.to_json())
+        self.json_handler.write(task_2.to_json())
+        self.json_handler.write(task_3.to_json())
+        # Check the first instance
+        json_data = self.json_handler.load_obj("Test1")
+        self.assertEquals(json_data, task_1.__dict__())
+        # Check the second instance
+        json_data = self.json_handler.load_obj("Test2")
+        self.assertEquals(json_data, task_2.__dict__())
+        # Check the third instance
+        json_data = self.json_handler.load_obj("Test3")
+        self.assertEquals(json_data, task_3.__dict__())
 
 
 if __name__ == "__main__":
