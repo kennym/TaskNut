@@ -69,13 +69,30 @@ class Task(object):
                     break
                 #: If has start and end time
                 if time[0] and time[1]:
-                    print "Task not running."
+                    print "Task already ended."
                     # Nothing to do here, skip
                     continue
                 # Task has no start time but end time - Should not happen!
                 if not time[0] and time[1]:
                     # Fail whistling and shouting!
                     raise AssertionError("This should not have happened!")
+
+    def show_stats(self):
+        """Show statistics about the current task.
+
+        | Name    | Duration     | From            | To
+        +---------+--------------+-----------------+-------------------
+        | <name>  | timedelta    |                 | 
+        |         |              |                 |       
+        |         |              |                 |     
+        """
+        return """
+    | Name    | Duration     | From            | To
+    +---------+--------------+-----------------+-------------------
+    | %s      | %s           | %s              | %s
+    |         |              |                 |       
+    |         |              |                 |     
+    """
 
     def to_json(self):
         """Return a JSON representation of the class."""

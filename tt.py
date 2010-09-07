@@ -25,10 +25,22 @@ class TimeTracker(object):
 
     def track(self, name):
         self.task.set_name(name)
-        # Write task-name to ~/.tt_running
-        f = open(self.CURRENT, "w")
-        f.write(name)
-        f.close()
+        try:
+            with open(self.CURRENT) as f:
+                d = f.readline()
+                if d:
+                    print "Task", d, "already running."
+                else:
+                    f.close()
+                    # Write task-name to ~/.tt_running
+                    f = open(self.CURRENT, "w")
+                    f.write(name)
+                    f.close()
+        except IOError:
+            # Write task-name to ~/.tt_running
+            f = open(self.CURRENT, "w")
+            f.write(name)
+            f.close()
         self.task.start_time()
         data = self.task.to_json()
         self.fh.write(data)
