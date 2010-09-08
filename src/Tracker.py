@@ -10,6 +10,7 @@ __email__ = "knny.myer@gmail.com"
 import simplejson as json
 
 from os import path
+from sys import exit
 
 from src import Task
 from src import JSONHandler
@@ -23,12 +24,18 @@ class Tracker(object):
         self.fh = JSONHandler("test.json")
 
     def track(self, name):
+        """Start tracking a task.
+
+        :param name The name of the task to start.
+        :type name str
+        """
         self.task.set_name(name)
         try:
             with open(self.CURRENT) as f:
                 d = f.readline()
                 if d:
                     print "Task", d, "already running."
+                    exit(0)
                 else:
                     f.close()
                     # Write task-name to ~/.tt_running
@@ -40,7 +47,7 @@ class Tracker(object):
             f = open(self.CURRENT, "w")
             f.write(name)
             f.close()
-        self.task.start_time()
+        self.task.start_task()
         data = self.task.to_json()
         self.fh.write(data)
 
@@ -59,10 +66,11 @@ class Tracker(object):
 
         if data:
             self.task.set_from_dict(self.fh.load_obj(data))
-            # Debug:
-            #print self.task.__dict__()
-            self.task.end_time()
+            self.task.end_task()
             self.fh.write(self.task.to_json())
+            # TODO:
+            print self.task.show_stats()
+            self.reset()
         else:
             print "No task running."
 
@@ -70,4 +78,5 @@ class Tracker(object):
         """Reset the current running task."""
         # Empty the self.CURRENT file
         f = open(self.CURRENT, "w")
-        f.write("").close()
+        f.write("")
+        f.close()
