@@ -15,7 +15,10 @@ from src import Tracker
 def main():
     tracker = Tracker()
     if argv[1].startswith("track"):
-        tracker.track(argv[2])
+        tracker.track("_".join(argv[2:])) # When there's more than parameter
+                                          # given, join them together
+    elif argv[1].startswith("stats"):
+        tracker.show_stats()
     elif argv[1].startswith("list"):
         tracker.fh.task_list
     elif argv[1].startswith("end"):
