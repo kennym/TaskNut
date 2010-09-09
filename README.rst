@@ -1,11 +1,11 @@
 tt - A simple time tracker
 ==========================
 
-This little program helps you to easily track your time.  It features a simple
-and extendible API.
+This little program helps you to easily track the time with tasks. It's aim to
+be useful to those who Get Things Done (c) in the terminal.  It features a
+simple and extendible API.
 
-Example usage:
---------------
+Example usage::
 
   tt                - By default, show running tasks
   tt track <name>   - Track your task with name `name`
