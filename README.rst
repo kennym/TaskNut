@@ -1,5 +1,5 @@
-tt - A simple time tracker
-==========================
+TaskNut - A simple time tracker
+===============================
 
 This little program helps you to easily track the time with tasks. It's aim to
 be useful to those who Get Things Done (c) in the terminal.  It features a
